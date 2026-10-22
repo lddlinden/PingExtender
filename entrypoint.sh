@@ -3,14 +3,17 @@
 VPN_USER="${VPN_USER:-spelare}"
 VPN_PASS="${VPN_PASS:-losenord123}"
 
-# Skapa ett enkelt självsignerat CA och servercertifikat för strongSwan om det saknas
+# Skapa kataloger om de saknas
+mkdir -p /etc/ipsec.d/private /etc/ipsec.d/certs /etc/ipsec.d/cacerts
+
+# Skapa ett enkelt självsignerat CA och servercertifikat om det inte finns
 if [ ! -f /etc/ipsec.d/certs/serverCert.pem ]; then
     ipsec pki --gen --type rsa --size 2048 --outform pem > /etc/ipsec.d/private/caKey.pem
     ipsec pki --self --ca --lifetime 3650 --in /etc/ipsec.d/private/caKey.pem --type rsa --outform pem > /etc/ipsec.d/cacerts/caCert.pem
     ipsec pki --gen --type rsa --size 2048 --outform pem > /etc/ipsec.d/private/serverKey.pem
     ipsec pki --pub --in /etc/ipsec.d/private/serverKey.pem --type rsa | \
         ipsec pki --issue --lifetime 730 --ca /etc/ipsec.d/cacerts/caCert.pem \
-        --cakey /etc/ipsec.d/private/caKey.pem --dn "CN=GameProxyServer" --san "@$(hostname)" \
+        --cakey /etc/ipsec.d/private/caKey.pem --dn "CN=GameProxyVPN" --san "@$(hostname)" \
         --flag serverAuth --outform pem > /etc/ipsec.d/certs/serverCert.pem
 fi
 
@@ -21,7 +24,7 @@ $VPN_USER : EAP "$VPN_PASS"
 $VPN_USER : XAUTH "$VPN_PASS"
 EOF
 
-# Justera ipsec.conf så den känner till certifikatet
+# Skriv ipsec.conf
 cat <<EOF > /etc/ipsec.conf
 config setup
     uniqueids=yes
@@ -48,7 +51,7 @@ conn ikev2-vpn
     eap_identity=%any
 EOF
 
-# Starta strongSwan i debug-läge så vi faktiskt ser loggar i Docker
+# Starta strongSwan i förgrunden/debug-läge så loggarna syns direkt i docker logs
 ipsec start --nofork &
 
 # Starta Python-webbservern
