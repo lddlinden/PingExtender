@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ping Extender</title>
+    <meta http-equiv="refresh" content="5"> <!-- Uppdatera sidan var 5:e sekund för live-data -->
+    <style>
+        body { font-family: sans-serif; background: #121212; color: #e0e0e0; padding: 20px; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        input, button { padding: 8px; margin: 5px 0; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 4px; }
+        button { background: #007acc; cursor: pointer; border: none; }
+        button:hover { background: #005999; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #252525; }
+    </style>
+</head>
+<body>
+    <h1>Game Latency Proxy (IKEv2)</h1>
+    
+    <div class="card">
+        <h3>Inställningar</h3>
+        <form action="/update" method="POST">
+            <label>Mål-ping (ms):</label><br>
+            <input type="number" name="target_ping" value="{{ config.target_ping }}"><br>
+            <label>Spelserver IP / Host:</label><br>
+            <input type="text" name="target_game_ip" value="{{ config.target_game_ip }}"><br>
+            <button type="submit">Spara & Uppdatera</button>
+        </form>
+        <p><b>Aktuell naturlig bas-ping till spelservern:</b> {{ base_ping }} ms</p>
+    </div>
+
+    <div class="card">
+        <h3>Anslutningsuppgifter för Windows</h3>
+        <p><b>Protokoll:</b> IKEv2</p>
+        <p><b>Server IP:</b> (Din Docker-servers publika IP)</p>
+        <p><b>Autentisering:</b> Användarnamn och lösenord</p>
+        <p>Användarnamn: <code>{{ config.vpn_user }}</code> | Lösenord: <code>{{ config.vpn_pass }}</code></p>
+    </div>
+
+    <div class="card">
+        <h3>Aktiva Anslutningar & Live-data</h3>
+        <table>
+            <tr>
+                <th>Klient VPN-IP</th>
+                <th>Inlagd Extra Delay</th>
+            </tr>
+            {% for ip, data in clients.items() %}
+            <tr>
+                <td>{{ ip }}</td>
+                <td>{{ data.delay }} ms</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">Inga aktiva klienter just nu.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
