@@ -12,6 +12,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #333; padding: 10px; text-align: left; }
         th { background: #252525; }
+        code { background: #2a2a2a; padding: 2px 6px; border-radius: 4px; color: #4ec9b0; }
     </style>
 </head>
 <body>
@@ -21,7 +22,7 @@
         <h3>Inställningar</h3>
         <form action="/update" method="POST">
             <label>Mål-ping (ms):</label><br>
-            <input type="number" name="target_ping" value="{{ config.target_ping }}"><br>
+            <input type="number" step="0.5" name="target_ping" value="{{ config.target_ping }}"><br>
             <label>Spelserver IP / Host:</label><br>
             <input type="text" name="target_game_ip" value="{{ config.target_game_ip }}"><br>
             <button type="submit">Spara & Uppdatera</button>
@@ -32,9 +33,11 @@
     <div class="card">
         <h3>Anslutningsuppgifter för Windows</h3>
         <p><b>Protokoll:</b> IKEv2</p>
-        <p><b>Server IP:</b> (Din Docker-servers publika IP)</p>
-        <p><b>Autentisering:</b> Användarnamn och lösenord</p>
-        <p>Användarnamn: <code>{{ config.vpn_user }}</code> | Lösenord: <code>{{ config.vpn_pass }}</code></p>
+        <p><b>Publik Server-IP:</b> <code>{{ public_ip }}</code></p>
+        <p><b>Autentisering:</b> Användarnamn och lösenord (med fördelad nyckel/PSK)</p>
+        <p>Användarnamn: <code>{{ config.vpn_user }}</code></p>
+        <p>Lösenord: <code>{{ config.vpn_pass }}</code></p>
+        <p>Delad nyckel (PSK): <code>{{ config.vpn_psk }}</code></p>
     </div>
 
     <div class="card">

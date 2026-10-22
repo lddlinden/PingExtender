@@ -68,7 +68,8 @@ def background_traffic_controller():
 @app.route("/")
 def index():
     base_ping = get_game_ping()
-    return render_template("index.html", config=CONFIG, clients=clients_data, base_ping=base_ping)
+    public_ip = get_ips()  # Hämtar den publika IP-adressen
+    return render_template("index.html", config=CONFIG, clients=clients_data, base_ping=base_ping, public_ip=public_ip)
 
 @app.route("/update", methods=["POST"])
 def update():

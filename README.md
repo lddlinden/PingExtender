@@ -4,6 +4,8 @@ Klona repon
 
 chmod +x entrypoint.sh
 
+cp .env.example .env // och uppdatera innehållet
+
 docker build -t game-proxy-vpn .
 
 docker run -d \
