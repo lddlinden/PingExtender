@@ -3,7 +3,6 @@ FROM alpine:3.18
 # Installera strongSwan, nödvändiga krypto-plugins, iptables, iproute2 och python
 RUN apk add --no-cache \
     strongswan \
-    strongswan-plugins \
     iptables \
     iproute2 \
     iputils \
