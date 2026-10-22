@@ -1,6 +1,5 @@
 FROM alpine:3.18
 
-# Installera nödvändiga paket (strongSwan för IKEv2, iptables, iproute2, python, etc.)
 RUN apk add --no-cache \
     strongswan \
     iptables \
@@ -12,6 +11,7 @@ RUN apk add --no-cache \
 
 WORKDIR /app
 COPY app.py .
+COPY ipsec.conf /etc/ipsec.conf
 COPY templates/ templates/
 COPY entrypoint.sh /entrypoint.sh
 
