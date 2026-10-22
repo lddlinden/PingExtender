@@ -78,4 +78,4 @@ if __name__ == "__main__":
     # Starta bakgrundstråd för nätverksmanipulation
     t = threading.Thread(target=background_traffic_controller, daemon=True)
     t.start()
-    app.run(host="0.0.0.0", port=9876)
+    app.run(host="0.0.0.0", port=8080)
