@@ -1,18 +1,20 @@
+import os
 import subprocess
 import threading
 import time
 import re
+import urllib.request
 from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
-# Globala inställningar
+# Konfiguration via miljövariabler (från .env)
 CONFIG = {
-    "target_ping": 60.0,
-    "target_game_ip": "8.8.8.8", # Byt ut mot din riktiga spelserver-IP
-    "vpn_psk": "HemligNyckel123",
-    "vpn_user": "spelare",
-    "vpn_pass": "losenord123"
+    "target_ping": float(os.getenv("TARGET_PING", "60.0")),
+    "target_game_ip": os.getenv("TARGET_GAME_IP", "8.8.8.8"),
+    "vpn_psk": os.getenv("VPN_PSK", "HemligNyckel123"),
+    "vpn_user": os.getenv("VPN_USER", "spelare"),
+    "vpn_pass": os.getenv("VPN_PASS", "losenord123")
 }
 
 clients_data = {}
@@ -79,3 +81,11 @@ if __name__ == "__main__":
     t = threading.Thread(target=background_traffic_controller, daemon=True)
     t.start()
     app.run(host="0.0.0.0", port=8080)
+
+def get_ips():
+    try:
+        # Hämta publik IP via en extern pub-ip tjänst
+        public_ip = urllib.request.urlopen('https://api.ipify.org', timeout=2).read().decode('utf8')
+    except:
+        public_ip = "Kunde ej hämta (Ingen internetåtkomst?)"
+    return public_ip

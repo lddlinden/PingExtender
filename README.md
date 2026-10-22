@@ -2,6 +2,8 @@ Verktyg för att lägga på latens i syfte att nå en målserver med en förbest
 
 Klona repon
 
+chmod +x entrypoint.sh
+
 docker build -t game-proxy-vpn .
 
 docker run -d \
