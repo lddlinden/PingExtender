@@ -27,6 +27,14 @@ def get_game_ping():
     except:
         return None
 
+def get_ips():
+    try:
+        # Hämta publik IP via en extern pub-ip tjänst
+        public_ip = urllib.request.urlopen('https://api.ipify.org', timeout=2).read().decode('utf8')
+    except:
+        public_ip = "Kunde ej hämta (Ingen internetåtkomst?)"
+    return public_ip
+
 def background_traffic_controller():
     # Initiera grundläggande tc på eth0
     subprocess.run("tc qdisc add dev eth0 root handle 1: prio", shell=True, stderr=subprocess.DEVNULL)
@@ -82,11 +90,3 @@ if __name__ == "__main__":
     t = threading.Thread(target=background_traffic_controller, daemon=True)
     t.start()
     app.run(host="0.0.0.0", port=8080)
-
-def get_ips():
-    try:
-        # Hämta publik IP via en extern pub-ip tjänst
-        public_ip = urllib.request.urlopen('https://api.ipify.org', timeout=2).read().decode('utf8')
-    except:
-        public_ip = "Kunde ej hämta (Ingen internetåtkomst?)"
-    return public_ip
